@@ -135,7 +135,6 @@ int Evaluate(string expression)
 			//Push operand on stack.
 			S.Push(operand);
 		}
-    cout << "S.Top: " << S.Top() << endl;
 	}
   int value = 0;
   value = S.Top(); S.Pop();
@@ -211,6 +210,7 @@ char ParanCor(string expression, int i, bool right)
     }
   }
   found_op:
+  cout << "Returned operator: " << op_char<< endl;
   return op_char;
 }
 
@@ -282,13 +282,13 @@ string DelParan(string expression)
       Sdel.Push(OtherParan(expression, i, false));
     }
     else if(expression[i] == ')' && expression[i+1] == '*'){
-      if(ParanCor(expression, i, true) == '*' || ParanCor(expression, i, true) == '/'){
+      if(ParanCor(expression, i, false) == '*' || ParanCor(expression, i, false) == '/'){
         Sdel.Push(i);
         Sdel.Push(OtherParan(expression, i, false));
       }
     }
     else if(expression[i] == ')' && expression[i+1] == '/'){
-      if(ParanCor(expression, i, true) == '*' || ParanCor(expression, i, true) == '/'){
+      if(ParanCor(expression, i, false) == '*' || ParanCor(expression, i, false) == '/'){
         Sdel.Push(i);
         Sdel.Push(OtherParan(expression, i, false));
       }
@@ -298,27 +298,38 @@ string DelParan(string expression)
       Sdel.Push(OtherParan(expression, i, true));
     }
     else if(expression[i] == '(' && expression[i-1] == '-'){
-      if(ParanCor(expression, i, false) == '*' || ParanCor(expression, i, true) == '/'){
+      if(ParanCor(expression, i, true) == '*' || ParanCor(expression, i, true) == '/'){
         Sdel.Push(i);
         Sdel.Push(OtherParan(expression, i, true));
       }
     }
     else if(expression[i] == '(' && expression[i-1] == '*'){
-      if(ParanCor(expression, i, false) == '*' || ParanCor(expression, i, true) == '/'){
+      if(ParanCor(expression, i, true) == '*' || ParanCor(expression, i, true) == '/'){
         Sdel.Push(i);
         Sdel.Push(OtherParan(expression, i, true));
       }
     }
-    cout << "Checking: " << expression[i] << endl;
   }
   //Deletion process.
   string infix = expression;
-  //SORT Sdel FIRST!!!! THEN DELETE FROM LARGEST TO SMALLEST!!!!
+  //Sort Sdel first, then delete from largest to smallest.
+  Stack<int> Stemp;
+  Stack<int> Ssort;
   while(Sdel.IsEmpty() == false){
-    cout << "Erasing: " << Sdel.Top() << endl;
-    infix.erase(Sdel.Top(),1);
+    while(Ssort.IsEmpty() == false && Sdel.Top() < Ssort.Top()){
+      Stemp.Push(Ssort.Top());
+      Ssort.Pop();
+    }
+    Ssort.Push(Sdel.Top());
     Sdel.Pop();
-    cout << "Infix is now: " << infix << endl;
+    while(Stemp.IsEmpty() == false){
+      Ssort.Push(Stemp.Top());
+      Stemp.Pop();
+    }
+  }
+  while(Ssort.IsEmpty() == false){
+    infix.erase(Ssort.Top(),1);
+    Ssort.Pop();
   }
   return infix;
 }
@@ -349,7 +360,6 @@ string Postfix2Infix(string expression)
 			//Push operand on stack.
 			S.Push(number);
 	  }
-    cout << "S.Top: " << S.Top() << endl;
   }
   string infix_paran = S.Top();
   string infix = DelParan(infix_paran);
@@ -364,7 +374,6 @@ string Infix2Prefix(string expression)
   Stack<char> Sop;
   //Read expression from right to left.
   for(int i = expression.length() - 1; i >= 0; i--){
-    cout << "Now reading: " << expression[i] << endl;
     //Push numbers to Spr stack.
     if(IsNumber(expression[i])) Spr.Push(expression[i]);
     //When operators, including '(' and ')', are encountered:
