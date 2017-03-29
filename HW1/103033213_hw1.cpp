@@ -210,7 +210,6 @@ char ParanCor(string expression, int i, bool right)
     }
   }
   found_op:
-  cout << "Returned operator: " << op_char<< endl;
   return op_char;
 }
 
@@ -268,9 +267,6 @@ string DelParan(string expression)
 {//Delete unnecessary parantheses from infix expression.
   //Create stack for paranthesis locations that should be deleted.
   Stack<int> Sdel;
-  //First and last parantheses should always be deleted.
-  Sdel.Push(0);
-  Sdel.Push(expression.length()-1);
   //Check each paranthesis and determine if it should be deleted.
   for(int i = 0; i < expression.length(); i++){
     if(expression[i] == ')' && expression[i+1] == '+'){
@@ -310,7 +306,6 @@ string DelParan(string expression)
       }
     }
   }
-  //Deletion process.
   string infix = expression;
   //Sort Sdel first, then delete from largest to smallest.
   Stack<int> Stemp;
@@ -327,6 +322,7 @@ string DelParan(string expression)
       Stemp.Pop();
     }
   }
+  //Deletion process.
   while(Ssort.IsEmpty() == false){
     infix.erase(Ssort.Top(),1);
     Ssort.Pop();
