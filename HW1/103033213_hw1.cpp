@@ -176,37 +176,46 @@ char FutureOperator(string expression, int current_i)
   }
 }
 
-char ParanCor(string expression, int i, bool right)
+int ParanCor(string expression, int i, bool right)
 {//Find the corresponding operator for this layer of parantheses.
   char op_char = 'e';
+  int paran_count = 0;
   //Reading from right to left.
   if(right == false){
     int j = i - 1;
     while(j >= 0){
-       if(IsNumber(expression[j])) j--;
-       else if(expression[j] == ')'){
-         while(expression[j] != '(') j--;
-         j--;
-       }
-       else if(IsOperator(expression[j])){
-         op_char = expression[j];
-         goto found_op;
-       }
+      if(expression[j] == ')'){
+        paran_count++;
+        j--;
+      }
+      else if(expression[j] == '('){
+        paran_count--;
+        j--;
+      }
+      else if(IsOperator(expression[j]) && paran_count == 0){
+        op_char = expression[j];
+        goto found_op;
+      }
+      else j--;
     }
   }
   //Reading from left to right.
   else{
     int j = i + 1;
     while(j < expression.length()){
-      if(IsNumber(expression[j])) j++;
-      else if(expression[j] == '('){
-        while(expression[j] != ')') j++;
+      if(expression[j] == '('){
+        paran_count++;
         j++;
       }
-      else if(IsOperator(expression[j])){
+      else if(expression[j] == ')'){
+        paran_count--;
+        j++;
+      }
+      else if(IsOperator(expression[j]) && paran_count == 0){
         op_char = expression[j];
         goto found_op;
       }
+      else j++;
     }
   }
   found_op:
@@ -267,8 +276,11 @@ string DelParan(string expression)
 {//Delete unnecessary parantheses from infix expression.
   //Create stack for paranthesis locations that should be deleted.
   Stack<int> Sdel;
+  //First and last parantheses should always be deleted.
+  Sdel.Push(0);
+  Sdel.Push(expression.length()-1);
   //Check each paranthesis and determine if it should be deleted.
-  for(int i = 0; i < expression.length(); i++){
+  for(int i = 1; i < expression.length(); i++){
     if(expression[i] == ')' && expression[i+1] == '+'){
       Sdel.Push(i);
       Sdel.Push(OtherParan(expression, i, false));
@@ -338,7 +350,6 @@ string Postfix2Infix(string expression)
   //Scanning each character from left.
 	for(int i = 0;i < expression.length();i++)
   {
-    //cout << "S.Top: " << S.Top() << endl;
     //If character is operator, pop two elements from stack, perform operation and push the result back.
 		if(IsOperator(expression[i]))
     {
