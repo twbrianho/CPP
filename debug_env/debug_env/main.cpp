@@ -26,21 +26,21 @@ class Stack
 public:
     Stack(int stackCapacity = 1000);
     //Create empty stack with initial capacity of 1000
-
+    
     ~Stack();
-
+    
     bool IsEmpty() const;
     //If number of elements in stack is 0, return true, else return false
-
+    
     T& Top() const;
     //Return the top element
-
+    
     void Push(const T& item);
     //Insert item into the top of stack
-
+    
     void Pop();
     //Delete the top element of the stack
-
+    
 private:
     T*stack;        //array for stack elements
     int top;        //array position of top element, init. value = -1
@@ -86,6 +86,7 @@ void Stack<T>::Pop()
 {//Delete top element from stack.
     if(IsEmpty()) throw "Stack is empty. Cannot delete.";
     top--;
+    //stack[top--].~T(); //Delete the element
 }
 
 ////////////////////////////
@@ -110,50 +111,45 @@ int PerformOperation(char operation, int operand1, int operand2)
     else if(operation == '-') return operand1 - operand2;
     else if(operation == '*') return operand1 * operand2;
     else if(operation == '/') return operand1 / operand2;
-
+    
     else cout << "Unexpected Error \n";
     return -1;
 }
 
 int Evaluate(string expression)
 {//Evaluate postfix expression.
-  Stack<int> S;
-  int operator_count = 0;
-  int operand_count = 0;
-
-  for(int i = 0;i< expression.length();i++){
-    //Scanning each character from left.
-    //If character is operator, pop two elements from stack, perform operation and push the result back.
-    if(IsOperator(expression[i])) {
-      operator_count++;
-      //If stack is empty, abort
-      if(S.IsEmpty()) return -1;
-      //Pop an operand.
-      int operand2 = S.Top(); S.Pop();
-      //If stack is empty, abort
-      if(S.IsEmpty()) return -1;
-      //Pop second operand.
-      int operand1 = S.Top(); S.Pop();
-      //Perform operation
-      int result = PerformOperation(expression[i], operand1, operand2);
-      //Push back result of operation on stack.
-      S.Push(result);
+    Stack<int> S;
+    
+    for(int i = 0;i< expression.length();i++){
+        //Scanning each character from left.
+        //If character is operator, pop two elements from stack, perform operation and push the result back.
+        if(IsOperator(expression[i])) {
+            //If stack is empty, abort
+            if(S.IsEmpty()) return -1;
+            //Pop an operand.
+            int operand2 = S.Top(); S.Pop();
+            //If stack is empty, abort
+            if(S.IsEmpty()) return -1;
+            //Pop second operand.
+            int operand1 = S.Top(); S.Pop();
+            //Perform operation
+            int result = PerformOperation(expression[i], operand1, operand2);
+            //Push back result of operation on stack.
+            S.Push(result);
+        }
+        else if(IsNumber(expression[i])){
+            //Extract the numeric operand from the string
+            int operand = expression[i] - '0';
+            //Push operand on stack.
+            S.Push(operand);
+        }
     }
-    else if(IsNumber(expression[i])){
-      operand_count++;
-      //Extract the numeric operand from the string
-      int operand = expression[i] - '0';
-      //Push operand on stack.
-      S.Push(operand);
-    }
-  }
-  int value = 0;
-  value = S.Top(); S.Pop();
-  if(operand_count - 1 != operator_count) return -1;
-  //If expression is correct, stack is empty, output final value.
-  if(S.IsEmpty()) return value;
-  //If stack any elements left, then postfix expression is incorrect
-  return -1;
+    int value = 0;
+    value = S.Top(); S.Pop();
+    //If expression is correct, stack is empty, output final value.
+    if(S.IsEmpty()) return value;
+    //If stack any elements left, then postfix expression is incorrect
+    return -1;
 }
 
 ////////////////////////////
@@ -447,7 +443,7 @@ string Infix2Prefix(string expression)
 int main(int argc, char **argv)
 {
     string expression;
-    //cout<<"Enter Postfix Expression\n";
+    cout<<"Enter Postfix Expression\n";
     while(getline(cin,expression)){
         //Evaluate postfix expression, and get value if expression is correct
         int result = Evaluate(expression);

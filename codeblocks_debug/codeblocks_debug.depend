@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1490798874 source:/Users/Apple/Desktop/CPP/HW1/103033213_hw1.cpp
+	<iostream>
+	<algorithm>
+	<string>
+
