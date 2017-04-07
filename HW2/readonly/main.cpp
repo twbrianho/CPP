@@ -8,14 +8,14 @@
 void tryTestCase(Chain &inst, std::string testfile)
 {
     std::ifstream ifs(testfile);
-	
+
     if( !ifs.good() )
         throw "[Missing Test File]";
-    
+
     std::string op, result;
 	int value1, value2;
     while( ifs >> op )
-    {	
+    {
 		if( op == "InsertBack" )
         {
             ifs >> value1;
@@ -42,7 +42,7 @@ void tryTestCase(Chain &inst, std::string testfile)
 			if( result != inst.toString() )
                 throw "[Wrong Answer]";
                 //cout << result;
-                
+
 		}
 		else if( op == "EndL" )
         {
@@ -50,10 +50,10 @@ void tryTestCase(Chain &inst, std::string testfile)
 			if( result != inst.toStringL() )
                 throw "[Wrong Answer]";
                 //cout << result;
-                
+
 		}
     }
-    
+
     ifs.close();
 }
 
@@ -73,4 +73,4 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-//========================DO-NOT-MODIFY-THE-FILE======================== 
+//========================DO-NOT-MODIFY-THE-FILE========================
