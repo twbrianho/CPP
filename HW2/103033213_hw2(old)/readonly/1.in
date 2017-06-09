@@ -1,0 +1,21 @@
+InsertBack 2
+InsertBack 18
+InsertBack 35
+InsertBack 6
+InsertBack 49
+InsertAfter 6 7
+InsertAfter 49 35
+InsertAfter 1 55
+Delete 35
+InsertBack 79
+InsertBack 79
+DeleteAll 79
+InsertAfter 49 11
+Delete 7
+Delete 6
+Delete 88
+InsertBack 7
+InsertBack 6
+InsertBack 88
+EndR 2->18->49->11->35->7->6->88
+EndL 88->6->7->35->11->49->18->2

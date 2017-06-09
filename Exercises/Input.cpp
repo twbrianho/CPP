@@ -5,7 +5,7 @@ int main (){
 
   cout << "Enter your name: " << flush;
 
-  string input;
+  char input;
   cin >> input;
 
   cout << "Hello " << input << endl;
